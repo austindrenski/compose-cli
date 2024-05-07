@@ -524,8 +524,9 @@ func (b *ecsAPIService) createPolicies(project *types.Project, service types.Ser
 							Resource: arns,
 						},
 					},
+					Version: "2012-10-17", // https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_version.html
 				},
-				PolicyName: fmt.Sprintf("%sGrantAccessToSecrets", service.Name),
+				PolicyName: fmt.Sprintf("%sGrantAccessToSecrets", normalizeResourceName(service.Name)),
 			},
 		}
 	}
