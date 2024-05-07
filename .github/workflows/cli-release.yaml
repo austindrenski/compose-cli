@@ -12,6 +12,7 @@ on:
         default: 'true'
 
 env:
+  COMPOSE_CLOUD_EOL_SILENT: true
   GO_VERSION: 1.19
 
 jobs:
