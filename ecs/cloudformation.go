@@ -191,9 +191,6 @@ func (b *ecsAPIService) createService(project *types.Project, service types.Serv
 	taskDefinition := fmt.Sprintf("%sTaskDefinition", normalizeResourceName(service.Name))
 	template.Resources[taskDefinition] = definition
 
-	var healthCheck *cloudmap.Service_HealthCheckConfig
-	serviceRegistry := b.createServiceRegistry(service, template, healthCheck)
-
 	var (
 		dependsOn []string
 		serviceLB []ecs.Service_LoadBalancer
@@ -269,7 +266,7 @@ func (b *ecsAPIService) createService(project *types.Project, service types.Serv
 		PlatformVersion:    platformVersion,
 		PropagateTags:      ecsapi.PropagateTagsService,
 		SchedulingStrategy: ecsapi.SchedulingStrategyReplica,
-		ServiceRegistries:  []ecs.Service_ServiceRegistry{serviceRegistry},
+		ServiceRegistries:  b.createServiceRegistries(service, template),
 		Tags:               serviceTags(project, service),
 		TaskDefinition:     cloudformation.Ref(normalizeResourceName(taskDefinition)),
 	}
@@ -414,7 +411,11 @@ func (b *ecsAPIService) createTargetGroup(project *types.Project, service types.
 	return targetGroupName
 }
 
-func (b *ecsAPIService) createServiceRegistry(service types.ServiceConfig, template *cloudformation.Template, healthCheck *cloudmap.Service_HealthCheckConfig) ecs.Service_ServiceRegistry {
+func (b *ecsAPIService) createServiceRegistries(service types.ServiceConfig, template *cloudformation.Template) []ecs.Service_ServiceRegistry {
+	if len(service.Ports) == 0 {
+		return []ecs.Service_ServiceRegistry{}
+	}
+
 	serviceRegistration := fmt.Sprintf("%sServiceDiscoveryEntry", normalizeResourceName(service.Name))
 	serviceRegistry := ecs.Service_ServiceRegistry{
 		RegistryArn: cloudformation.GetAtt(serviceRegistration, "Arn"),
@@ -422,7 +423,7 @@ func (b *ecsAPIService) createServiceRegistry(service types.ServiceConfig, templ
 
 	template.Resources[serviceRegistration] = &cloudmap.Service{
 		Description:       fmt.Sprintf("%q service discovery entry in Cloud Map", service.Name),
-		HealthCheckConfig: healthCheck,
+		HealthCheckConfig: nil,
 		HealthCheckCustomConfig: &cloudmap.Service_HealthCheckCustomConfig{
 			FailureThreshold: 1,
 		},
@@ -438,7 +439,7 @@ func (b *ecsAPIService) createServiceRegistry(service types.ServiceConfig, templ
 			RoutingPolicy: cloudmapapi.RoutingPolicyMultivalue,
 		},
 	}
-	return serviceRegistry
+	return []ecs.Service_ServiceRegistry{serviceRegistry}
 }
 
 func (b *ecsAPIService) createTaskExecutionRole(project *types.Project, service types.ServiceConfig, template *cloudformation.Template) string {
