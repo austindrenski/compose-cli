@@ -412,7 +412,7 @@ func (b *ecsAPIService) createTargetGroup(project *types.Project, service types.
 }
 
 func (b *ecsAPIService) createServiceRegistries(service types.ServiceConfig, template *cloudformation.Template) []ecs.Service_ServiceRegistry {
-	if len(service.Ports) == 0 {
+	if _, ok := service.Labels["traefik.enable"]; !ok && len(service.Ports) == 0 {
 		return []ecs.Service_ServiceRegistry{}
 	}
 
