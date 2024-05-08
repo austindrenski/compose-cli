@@ -85,26 +85,26 @@ func volumeMountPolicyDocument(volume string, filesystem string) PolicyDocument 
 // PolicyDocument describes an IAM policy document
 // could alternatively depend on https://github.com/kubernetes-sigs/cluster-api-provider-aws/blob/master/cmd/clusterawsadm/api/iam/v1alpha1/types.go
 type PolicyDocument struct {
-	Version   string            `json:",omitempty" yaml:",omitempty"`
-	Statement []PolicyStatement `json:",omitempty" yaml:",omitempty"`
+	Version   string            `json:",omitempty"`
+	Statement []PolicyStatement `json:",omitempty"`
 }
 
 // PolicyStatement describes an IAM policy statement
 type PolicyStatement struct {
-	Effect    string          `json:",omitempty" yaml:",omitempty"`
-	Action    []string        `json:",omitempty" yaml:",omitempty"`
-	Principal PolicyPrincipal `json:",omitempty" yaml:",omitempty"`
-	Resource  []string        `json:",omitempty" yaml:",omitempty"`
-	Condition Condition       `json:",omitempty" yaml:",omitempty"`
+	Effect    string          `json:",omitempty"`
+	Action    []string        `json:",omitempty"`
+	Principal PolicyPrincipal `json:",omitempty"`
+	Resource  []string        `json:",omitempty"`
+	Condition Condition       `json:",omitempty"`
 }
 
 // PolicyPrincipal describes an IAM policy principal
 type PolicyPrincipal struct {
-	Service string `json:",omitempty" yaml:",omitempty"`
+	Service string `json:",omitempty"`
 }
 
 // Condition is the map of all conditions in the statement entry.
 type Condition struct {
-	StringEquals map[string]string `json:",omitempty" yaml:",omitempty"`
-	Bool         map[string]string `json:",omitempty" yaml:",omitempty"`
+	StringEquals map[string]string `json:",omitempty"`
+	Bool         map[string]string `json:",omitempty"`
 }
