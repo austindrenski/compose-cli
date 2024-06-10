@@ -21,7 +21,7 @@ require (
 	github.com/containerd/console v1.0.3
 	github.com/containerd/containerd v1.5.17
 	github.com/distribution/distribution/v3 v3.0.0-20210316161203-a01c71e2477e
-	github.com/docker/cli v20.10.7+incompatible
+	github.com/docker/cli v20.10.9+incompatible
 	github.com/docker/compose/v2 v2.2.0
 	github.com/docker/docker v20.10.7+incompatible
 	github.com/docker/go-connections v0.4.0
